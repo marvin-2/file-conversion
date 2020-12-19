@@ -1,5 +1,6 @@
 import random
 import csv
+import json
 from openpyxl import Workbook, load_workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
@@ -9,7 +10,7 @@ MAX_RANGE = 99999999999999
 
 def gen_csv(toPath):
 	print("\ngen_csv(" + toPath + ")")
-	headings = ["Description", "UPC"]
+	headings = ["UPC", "Description"]
 	brandNames = [
 		"Hershey","Snickers","AlmondJoy", "Reese's", "Mounds", "KitKat", 
     "Twix", "MilkyWay", "Crunch", "Musketeers", "PayDay", "ButterFinger"
@@ -20,8 +21,8 @@ def gen_csv(toPath):
 	f.write(",".join(headings) + "\n")
 	for b in brandNames:
 		for s in sizes:
-			f.write(b + " " + s + ',' 
-			        + str(random.randrange(MIN_RANGE,MAX_RANGE)) + "\n")
+			f.write(str(random.randrange(MIN_RANGE,MAX_RANGE)) + 
+			         "," + b + " " + s  + "\n")
 	f.close()
 
 
@@ -32,7 +33,7 @@ def print_csv(fromPath):
 	f.close()
 
 
-def read_xlsx(fromPath):
+def print_xlsx(fromPath):
 	"""
 	Reads xlsx file
 	"""
@@ -94,3 +95,45 @@ def csv_to_xlsx_table(fromPath, toPath):
 	wb.save(toPath)
 
 
+def test_json(toPath):
+	# py_obj = {"firstName": "Joe", "lastName": "Anders", "phone": "123-456-7890"}
+	py_obj = {"firstName": "Joe", "lastName": "Anders", "phones": [{"home":"123-456-7890"}, {"work": "987-654-3210"}]}
+
+	# Encoding
+	json_str = json.dumps(py_obj, indent = 4)
+	print()
+	print(type(json_str))
+	print(json_str)
+
+	# Decoding
+	py_obj2 = json.loads(json_str)
+	print()
+	print(type(py_obj2))
+	print(py_obj2)
+
+
+def csv_to_json(fromPath, toPath):
+	print("\ncsv_to_json(" + fromPath + "," + toPath + ")")
+	data = {}
+
+	with open(fromPath, newline = '') as csvF:
+		reader = csv.DictReader(csvF)
+
+		# for ln in reader:
+		# 	key = ln["No"]
+		# 	data[key] = ln
+	
+		# for ln in reader:
+		# 	key = ln[0]
+		# 	data[key] = ln
+
+		for ln in reader:
+			print(ln)
+			x = list(ln)
+			key = ln[x[0]]
+			data[key] = ln
+
+	print(data)
+
+	with open(toPath, 'w') as jsonF:
+		jsonF.write(json.dumps(data, indent=4)) 

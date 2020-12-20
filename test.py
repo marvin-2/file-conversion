@@ -9,5 +9,5 @@ import excel
 # excel.csv_to_xlsx_table("Test.csv", "Test2.xlsx")
 # excel.print_xlsx("Test2.xlsx")
 
-# excel.test_json("Test.json")
-excel.csv_to_json("Test.csv", "Test.json")
+# excel.csv_to_json("Test.csv", "Test.json")
+excel.print_json("Test.json")

@@ -96,8 +96,8 @@ def csv_to_xlsx_table(fromPath, toPath):
 
 
 def test_json(toPath):
-	# py_obj = {"firstName": "Joe", "lastName": "Anders", "phone": "123-456-7890"}
-	py_obj = {"firstName": "Joe", "lastName": "Anders", "phones": [{"home":"123-456-7890"}, {"work": "987-654-3210"}]}
+	py_obj = {"firstName": "Joe", "lastName": "Anders", "phone": "123-456-7890"}
+	# py_obj = {"firstName": "Joe", "lastName": "Anders", "phones": [{"home":"123-456-7890"}, {"work": "987-654-3210"}]}
 
 	# Encoding
 	json_str = json.dumps(py_obj, indent = 4)
@@ -112,28 +112,26 @@ def test_json(toPath):
 	print(py_obj2)
 
 
+def print_json(fromPath):
+	with open(fromPath) as jsonF:
+		data = jsonF.read()
+
+	print(data)
+		
+
+
 def csv_to_json(fromPath, toPath):
 	print("\ncsv_to_json(" + fromPath + "," + toPath + ")")
-	data = {}
+	data = []
 
+	# Read through csv file 
 	with open(fromPath, newline = '') as csvF:
 		reader = csv.DictReader(csvF)
 
-		# for ln in reader:
-		# 	key = ln["No"]
-		# 	data[key] = ln
-	
-		# for ln in reader:
-		# 	key = ln[0]
-		# 	data[key] = ln
+		# Append rows to list of dictionaries
+		for row in reader:
+			data.append(row)
 
-		for ln in reader:
-			print(ln)
-			x = list(ln)
-			key = ln[x[0]]
-			data[key] = ln
-
-	print(data)
-
+	# Convert list of dictionaries to json, and write to file
 	with open(toPath, 'w') as jsonF:
 		jsonF.write(json.dumps(data, indent=4)) 

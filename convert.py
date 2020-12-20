@@ -1,8 +1,12 @@
+# Extra libraries: defusedxml, openpyxl
+
 import random
 import csv
 import json
+from openpyxl import DEFUSEDXML
 from openpyxl import Workbook, load_workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
+
 
 MIN_RANGE = 10000000000000
 MAX_RANGE = 99999999999999
@@ -135,3 +139,14 @@ def csv_to_json(fromPath, toPath):
 	# Convert list of dictionaries to json, and write to file
 	with open(toPath, 'w') as jsonF:
 		jsonF.write(json.dumps(data, indent=4)) 
+
+
+def defused():
+	"""
+	Installing the defusedxml library helps to safeguard against xml attacks.
+	Used by openpyxl, etc.
+	"""
+	if DEFUSEDXML is True:
+		print("Defused")
+	else:
+		print("Not defused")

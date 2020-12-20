@@ -17,3 +17,7 @@ import convert
 # # json
 # convert.csv_to_json("Test.csv", "Test.json")
 # convert.print_json("Test.json")
+
+# # xml
+convert.csv_to_xml("Test.xml")
+# convert.print_xml("Test.xml")

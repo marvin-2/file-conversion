@@ -1,13 +1,14 @@
 # Extra libraries: defusedxml, openpyxl
 
 import xml.etree.ElementTree as ET 
-from xml.dom import minidom
 import random
 import csv
 import json
+from xml.dom import minidom
 from openpyxl import DEFUSEDXML
 from openpyxl import Workbook, load_workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
+from defusedxml.ElementTree import parse
 
 
 MIN_RANGE = 10000000000000
@@ -43,7 +44,7 @@ def print_xlsx(fromPath):
 	"""
 	Reads xlsx file
 	"""
-	print("\nread_xlsx(" + fromPath + ")")
+	print("\nprint_xlsx(" + fromPath + ")")
 	wb = load_workbook(fromPath)
 	sheet = wb.active
 
@@ -101,7 +102,8 @@ def csv_to_xlsx_table(fromPath, toPath):
 	wb.save(toPath)
 
 
-def test_json(toPath):
+def test_json():
+	print("\ntest_json()")
 	py_obj = {"firstName": "Joe", "lastName": "Anders", "phone": "123-456-7890"}
 	# py_obj = {"firstName": "Joe", "lastName": "Anders", "phones": [{"home":"123-456-7890"}, {"work": "987-654-3210"}]}
 
@@ -119,6 +121,7 @@ def test_json(toPath):
 
 
 def print_json(fromPath):
+	print("\nprint_json(" + fromPath + ")")
 	with open(fromPath) as jsonF:
 		data = jsonF.read()
 
@@ -148,13 +151,15 @@ def defused():
 	Installing the defusedxml library helps to safeguard against xml attacks.
 	Used by openpyxl, etc.
 	"""
+	print("\ndefused()")
 	if DEFUSEDXML is True:
 		print("Defused")
 	else:
 		print("Not defused")
 
 
-def csv_to_xml(toPath):
+def test_xml(toPath):
+	print("\ntest_xml(" + toPath + ")")
 	# This is the parent (root) tag  
 	# onto which other tags would be 
 	# created 
@@ -184,9 +189,47 @@ def csv_to_xml(toPath):
 	# stream 
 	b_xml = ET.tostring(data)
 	xmlstr = minidom.parseString(ET.tostring(data)).toprettyxml(indent="   ")
+	print(xmlstr)
 		
-	# Opening a file under the name `items2.xml`, 
 	# with operation mode `wb` (write + binary) 
 	with open(toPath, "wb") as f:
 		# f.write(b_xml)
 		f.write(xmlstr.encode('utf-8'))
+
+
+def csv_to_xml(fromPath, toPath):
+	print("\ncsv_to_xml(" + fromPath + "," + toPath + ")")
+	headers = []
+	data = ET.Element('root') 
+		
+	with open(fromPath) as csvF:
+		reader = csv.reader(csvF)
+		
+		for rCount, row in enumerate(reader):
+
+			# save headers and skip
+			if rCount == 0:
+				headers = row
+				continue
+
+			element1 = ET.SubElement(data, 'row') 
+				
+			# write a tag for each column with the header and detail
+			for hCount, header in enumerate(headers):
+				s_elem1 = ET.SubElement(element1, header) 
+				s_elem1.text = row[hCount]
+		
+	# convert to indented string
+	xmlstr = minidom.parseString(ET.tostring(data)).toprettyxml(indent="   ")
+		
+	# mode `wb` (write + binary) 
+	with open(toPath, "wb") as f:
+		f.write(xmlstr.encode('utf-8'))
+
+
+def print_xml(fromPath):
+	et = parse(fromPath)
+	root = et.getroot()
+	xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ",newl='')
+	# xmlstr = ET.tostring(root)
+	print(xmlstr)
